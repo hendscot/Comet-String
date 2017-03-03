@@ -5,11 +5,11 @@
 
 /*=================TO DO ==================
  * 1. handle s_sLen assign in Alloc
- *
+ * 2. add way to insert append numbers
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     0.1.2
+#define COMET_STRING_VERSION     0.1.3
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -35,8 +35,8 @@ namespace Comet {
             String& operator  =   (const char*);
             /*************** TODO ! ***********/
             
-            String  operator  +=  (const String&);
-            String  operator  +=  (const char*);
+            void  operator  +=  (const String&);
+            void  operator  +=  (const char*);
             /**********************************/            
             bool    operator  ==  (const String&)  const;
             bool    operator  ==  (const char*)    const;
@@ -63,6 +63,8 @@ namespace Comet {
             void    Replace       (int, int, const char*);
             void    Append        (char);
             void    Append        (const char*);
+            void    Append        (const String&);
+            void    Append        (const int);
             void    Prepend       (char);
             bool    Insert        (int, char);
             void    Delete        (int);
@@ -101,6 +103,7 @@ namespace Comet {
             bool isAlpha          (const char)     const;
             bool isUpper          (const char)     const;
             bool isLower          (const char)     const;
+            char IntToChar        (int);
 
             // friends
             friend std::ostream& operator<<(std::ostream&, const String&);

@@ -154,7 +154,6 @@ namespace Comet {
         return (this->s_sLen <= str.s_sLen) ? true : false;
     }
     
-    // TODO : REWRITE - NOT FUNCTIONING
     String operator+(const String& lhs, const String& rhs) {
         String string;
         string.Alloc(string.s_sLen = lhs.Length() + rhs.Length());
@@ -163,14 +162,11 @@ namespace Comet {
     }
 
 
-    String String::operator+=(const char* str) {
-        String string(*this);
-        this->Alloc(string.s_sLen += len(str));
-        this->Concat(string.s_buf, str);
-        return *this;
+    void String::operator+=(const char* str) {
+        this->Append(str);
     }
 
-    String String::operator+=(const String& str) {
+    void String::operator+=(const String& str) {
         return (*this += str.s_buf);
     }
 
@@ -377,6 +373,21 @@ namespace Comet {
      */
     void String::Append(const char* str) {
         Append(str, len(str));
+    }
+
+    void String::Append(const String& str) {
+        Append(str.s_buf, str.Length());
+    }
+
+    //?? WORK IN PROGRESS, MAY NEED TO USE A VEC FOR INTTOCHAR
+    // FOR MULTI-DIGIT INTEGERS
+    void String::Append(int x) {
+        char a = (char)(x + 48);
+        std::cout << a << std::endl;
+        Append(&a, 1);
+    }
+
+    char String::IntToChar(int x) {    
     }
     /*One of the two public append methods. Passes a char by reference to be compatible with
      * cstring append method where append logic is. we pass one as the length of the character
