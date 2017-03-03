@@ -5,7 +5,7 @@ Initially created for fun, now being used, and semi-tailored for, my Comet Edito
 
 Comet String is relatively small but has many of the features you would expect in a string class.
 
-#Current Features
+# Current Features
 <ul>
   <li>return a substring</li> 
   <li>append</li> 
@@ -17,10 +17,10 @@ Comet String is relatively small but has many of the features you would expect i
   <li>And more, with more features being added!</li>
  </ul>
  
- #Updates
+# Updates
  This project is updated sporadically; mostly when I encounter a bug or need a new feature in Comet Editor.
   
-  #Usage
+# Usage
   This project, as is the case with all of my projects, is hosted mostly for my own convenience, but also with the hope that
   at least one person may find it useful/educational. If, for whatever reason, you are that person, feel free to copy, hack and modify
   this as you see fit!
