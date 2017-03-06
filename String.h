@@ -9,7 +9,7 @@
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     0.1.3
+#define COMET_STRING_VERSION     0.1.5
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -66,7 +66,8 @@ namespace Comet {
             void    Append        (const String&);
             void    Append        (const int);
             void    Prepend       (char);
-            bool    Insert        (int, char);
+            bool    Insert        (int, const char*);
+            bool    Insert        (int, const char*, int);
             void    Delete        (int);
             void    Delete        (int, int);
             void    Reverse       ();

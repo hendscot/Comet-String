@@ -347,7 +347,8 @@ namespace Comet {
      *      length of string for them. This is necessary to user char with Append!
      **************************************************************************************/
     void String::Append(const char* str, int leng) {
-        // if string length doesn't already equal buffer length
+        Insert(this->End() + 1, str, leng);
+        /*// if string length doesn't already equal buffer length
         int cLen = leng;
         //std::cout << cLen << std::endl;
         if ((s_sLen + cLen) < s_bLen) {
@@ -366,7 +367,7 @@ namespace Comet {
             FillFrom(t_buf);                                                   // now refill string with appended contents
             FillFrom(str, s_sLen - cLen);
             delete t_buf;                                                      // cleanup temporary buffer
-        }
+        }*/
     }
     /****One of the two public append methods. Calculates length of string and calls overloaded
      *   append method
@@ -382,9 +383,15 @@ namespace Comet {
     //?? WORK IN PROGRESS, MAY NEED TO USE A VEC FOR INTTOCHAR
     // FOR MULTI-DIGIT INTEGERS
     void String::Append(int x) {
-        char a = (char)(x + 48);
-        std::cout << a << std::endl;
-        Append(&a, 1);
+        String num;
+        char y;
+        for (; !(x >= 0 && x <= 9); x /= 10) {
+            y = char((x % 10) + 48);
+            num.Prepend(y);
+        }
+         y = char((x % 10) + 48);
+         num.Prepend(y);
+        Append(num);
     }
 
     char String::IntToChar(int x) {    
@@ -401,36 +408,42 @@ namespace Comet {
 
     // simply inserts a char at the beginning. Unecessary, just for user-friendliness
     void String::Prepend(char ch) {
-        Insert(0, ch);
+        Insert(0, &ch, 1);
+    }
+
+    bool String::Insert(int in, const char* str) {
+        Insert(in, str, len(str));
     }
 
     // insert a char at a specified index
-    bool String::Insert(int in, char ch) {
+    bool String::Insert(int in, const char* str, int strLen) {
+        if (s_sLen == 0 && in == 0) {
+            Alloc(strLen + REALLOC_BY);
+            s_sLen += strLen;
+            FillFrom(str);
+        }
         // make sure index is within bounds
-        if (in >= 0 && in < s_sLen) {
+        else if (in >= 0 && in <= s_sLen) {
+            int length = s_sLen;
+            int sLength = s_sLen + strLen;                                           // maintain string length
             // must reallocate if inserting a char will cause overflow
-            if ((s_sLen + 1) > s_bLen) {
-                int sLength = s_sLen;                                           // maintain string length
-                int bLength = s_bLen + REALLOC_BY;                              // buffer length is orig buff plus modifier
-                char* t_buf = new char[bLength + 1];                            // allocate a tempory buffer to store string contents
-                t_buf[bLength] = '\0';                                          // null terminate temp buff
+            if ((s_sLen + strLen) > s_bLen) {
+                int bLength = sLength + REALLOC_BY;                              // buffer length is orig buff plus modifier
+                char* t_buf = new char[length + 1];                            // allocate a tempory buffer to store string contents
+                t_buf[length] = '\0';                                          // null terminate temp buff
                 FillTo(t_buf);                                                  // fill temporary buffer with string contents
                 Alloc(bLength);                                                 // reallocate string
                 s_sLen = sLength;                                               // restore string length after reallocation
                 FillFrom(t_buf);                                                // fill string from buffer
-                delete t_buf;                                                   // cleanup buffer
-            }
-            if (s_sLen != 0){
-                ++s_sLen;                                                           // increment string length by 1
-                for (iter = (s_sLen - 1); iter > in; iter--) {
-                    s_buf[iter] = s_buf[iter - 1];                                  // shift all contents to right of index
-                }
-                s_buf[in] = ch;                                                     // now insert char
+                delete t_buf;                                                 // cleanup buffer
             }
             else {
-                ++s_sLen;
-                s_buf[0] = ch;
+                s_sLen += strLen;
             }
+            for (iter = length; iter >= in; --iter) {
+                s_buf[iter + strLen] = s_buf[iter];
+            }
+            FillFrom(str, in);
         }
         // TODO: OUT OF INDEX HANDLE
         else {
