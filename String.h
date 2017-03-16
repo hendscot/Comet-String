@@ -9,7 +9,7 @@
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     0.1.5
+#define COMET_STRING_VERSION     "0.1.5"
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -21,7 +21,9 @@ namespace Comet {
     class String {
         public:
             // constructors
-            String                (int size = 0);
+            explicit
+            String                (size_t size = 0);
+            explicit
             String                (const char*);
             
             // copy constructor
@@ -38,65 +40,65 @@ namespace Comet {
             void  operator  +=  (const String&);
             void  operator  +=  (const char*);
             /**********************************/            
-            bool    operator  ==  (const String&)  const;
-            bool    operator  ==  (const char*)    const;
-            bool    operator  !=  (const String&)  const;
-            bool    operator  !=  (const char*)    const;
-            bool    operator  >   (const char*)    const;
-            bool    operator  >   (const String&)  const;
-            bool    operator  <   (const char*)    const;
-            bool    operator  <   (const String&)  const;
-            bool    operator  >=  (const char*)    const;
-            bool    operator  >=  (const String&)  const;
-            bool    operator  <=  (const char*)    const;
-            bool    operator  <=  (const String&)  const;
-            char&   operator  []  (const int)      const;
+            bool    operator  ==  (const String&)     const;
+            bool    operator  ==  (const char*)       const;
+            bool    operator  !=  (const String&)     const;
+            bool    operator  !=  (const char*)       const;
+            bool    operator  >   (const char*)       const;
+            bool    operator  >   (const String&)     const;
+            bool    operator  <   (const char*)       const;
+            bool    operator  <   (const String&)     const;
+            bool    operator  >=  (const char*)       const;
+            bool    operator  >=  (const String&)     const;
+            bool    operator  <=  (const char*)       const;
+            bool    operator  <=  (const String&)     const;
+            char&   operator  []  (const size_t)      const;
 
             // Public Accessors
-            int     End         ()                 const;
-            int     Length      ()                 const;
-            char*   GetBuff     ()                 const;
-            char    CharAt      (int)              const;
+            int     End           ()                  const;
+            int     Length        ()                  const;
+            char*   GetBuff       ()                  const;
+            char    CharAt        (const size_t)      const;
 
             // Public Mutators
-            void    Replace       (int, char);
-            void    Replace       (int, int, const char*);
+            void    Replace       (const size_t, char);
+            void    Replace       (const size_t, const size_t, const char*);
             void    Append        (char);
             void    Append        (const char*);
             void    Append        (const String&);
             void    Append        (const int);
             void    Prepend       (char);
-            bool    Insert        (int, const char*);
-            bool    Insert        (int, const char*, int);
-            void    Delete        (int);
-            void    Delete        (int, int);
+            bool    Insert        (const size_t, const char*);
+            bool    Insert        (const size_t, const size_t, const char*);
+            void    Delete        (const size_t);
+            void    Delete        (const size_t, const size_t);
             void    Reverse       ();
             bool    Upper         ();
-            bool    Upper         (int);
-            bool    Upper         (int, int);
+            bool    Upper         (const size_t);
+            bool    Upper         (const size_t, const size_t);
             bool    Lower         ();
-            bool    Lower         (int);
-            bool    Lower         (int, int);
+            bool    Lower         (const size_t);
+            bool    Lower         (const size_t, const size_t);
             void    Concat        (const String&);
-            String  Substr        (int, int);
+            String  Substr        (const size_t, const size_t);
 
         private:
             // Private Data Members
             mutable 
-            int     iter;
-            char*   s_buf;
-            int     s_bLen;
-            int     s_sLen;
+            char*      s_buf;
+            size_t     iter;
+            size_t     s_bLen;
+            size_t     s_sLen;
 
             // Private Mutators
-            void    Alloc         (int);
+            void    Alloc         (const size_t);
             void    Dealloc       ();
-            void    Term          (int);
+            void    Term          (const size_t);
             void    FillFrom      (const char*);
-            void    FillFrom      (const char*, int);
+            void    FillFrom      (const char*, const size_t, const size_t);
             void    FillTo        (char*) const;
             void    Concat        (const char*, const char*);
-            void    Append        (const char*, int);
+            void    Append        (const char*, const size_t);
 
 
             // Private helper functions

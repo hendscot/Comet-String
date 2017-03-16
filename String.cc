@@ -68,7 +68,7 @@ namespace Comet {
             s_sLen = length;
             Term(s_sLen);
         }
-        FillFrom(str, 0);
+        FillFrom(str, 0, length);
         return *this;
     }
 
@@ -219,11 +219,11 @@ namespace Comet {
 
     // fill buffer with c-string
     void String::FillFrom(const char* str) {
-        FillFrom(str, 0);
+        FillFrom(str, 0, len(str));
     }
 
-    void String::FillFrom(const char* str, int start) {
-        int i, length = len(str);
+    void String::FillFrom(const char* str, int start, int length) {
+        int i;
         for (i = 0, iter = start; iter < this->s_sLen && i < length; iter++, i++) {
             this->s_buf[iter] = str[i];
         }
@@ -443,7 +443,7 @@ namespace Comet {
             for (iter = length; iter >= in; --iter) {
                 s_buf[iter + strLen] = s_buf[iter];
             }
-            FillFrom(str, in);
+            FillFrom(str, in, strLen);
         }
         // TODO: OUT OF INDEX HANDLE
         else {
