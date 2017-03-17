@@ -6,10 +6,12 @@
 /*=================TO DO ==================
  * 1. handle s_sLen assign in Alloc
  * 2. add way to insert append numbers
+ * 3. insert to 0/Prepend throws segfault
+ * 4. add support for inserting char
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     "0.1.5"
+#define COMET_STRING_VERSION     "0.1.7"
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -55,8 +57,8 @@ namespace Comet {
             char&   operator  []  (const size_t)      const;
 
             // Public Accessors
-            int     End           ()                  const;
-            int     Length        ()                  const;
+            size_t  End           ()                  const;
+            size_t  Length        ()                  const;
             char*   GetBuff       ()                  const;
             char    CharAt        (const size_t)      const;
 
@@ -66,7 +68,7 @@ namespace Comet {
             void    Append        (char);
             void    Append        (const char*);
             void    Append        (const String&);
-            void    Append        (const int);
+            void    Append        (int);
             void    Prepend       (char);
             bool    Insert        (const size_t, const char*);
             bool    Insert        (const size_t, const size_t, const char*);
@@ -84,8 +86,8 @@ namespace Comet {
 
         private:
             // Private Data Members
-            mutable 
             char*      s_buf;
+            mutable 
             size_t     iter;
             size_t     s_bLen;
             size_t     s_sLen;
@@ -102,11 +104,11 @@ namespace Comet {
 
 
             // Private helper functions
-            int  len              (const char*)    const;
-            bool isAlpha          (const char)     const;
-            bool isUpper          (const char)     const;
-            bool isLower          (const char)     const;
-            char IntToChar        (int);
+            size_t len              (const char*)    const;
+            bool   isAlpha          (const char)     const;
+            bool   isUpper          (const char)     const;
+            bool   isLower          (const char)     const;
+            char   IntToChar        (int);
 
             // friends
             friend std::ostream& operator<<(std::ostream&, const String&);

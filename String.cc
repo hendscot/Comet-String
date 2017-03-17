@@ -2,11 +2,8 @@
 #include "String.h"
 namespace Comet {
     // Default Constructor
-    String::String(int size) {
-        // NULL the buffer
-        s_buf = NULL;
-        s_bLen = 0;
-        s_sLen = 0;
+    String::String(const size_t size)
+        : s_buf(NULL), s_bLen(0), s_sLen(0) {
         // allocate space
         Alloc(size);
     } // String::String()
@@ -58,7 +55,7 @@ namespace Comet {
 
     // Assignment overload (String and C-String)
     String& String::operator=(const char* str) {
-        int length = len(str);
+        size_t length = len(str);
         // only reallocate if new string length is > buffer length
         if (length > s_bLen) {
             Alloc (length);
@@ -173,8 +170,8 @@ namespace Comet {
     // TODO : ERROR HANDLING
     void String::Concat(const String& str) {
         if (str.s_sLen > (this->s_bLen - this->s_sLen)) {
-            /*int sLength = (s_sLen + str.s_s_len);
-            int bLength = (s_bLen + str.s_bLen);
+            /*size_t sLength = (s_sLen + str.s_s_len);
+            size_t bLength = (s_bLen + str.s_bLen);
             char* t_buf = new char[bLength + 1];
             t_buf[bLength] = '\0';
             FillTo(t_buf, 0, this->s_sLen);
@@ -184,7 +181,7 @@ namespace Comet {
             FillFrom(t_buf, 0, ??);*/
         }
         else {
-            for (int i = 0, iter = s_sLen; i < str.s_sLen; iter++, i++) {
+            for (size_t i = 0, iter = s_sLen; i < str.s_sLen; iter++, i++) {
                 this->s_buf[iter] = str.s_buf[i];
                 ++s_sLen;
             }
@@ -194,21 +191,21 @@ namespace Comet {
     // concatenate two c-strings
     void String::Concat(const char* str1, const char* str2) {
         // len1 = length of first string, len2 = length of second string
-        int len1 = len(str1), len2 = len(str2);
+        size_t len1 = len(str1), len2 = len(str2);
         // fill first part of string with c-string
         for (iter = 0; iter < len1; iter++) {
             s_buf[iter] = str1[iter];
         }
         // fill second part of string with second c-string
-        for (int i = 0; i < len2; i++, iter++) {
+        for (size_t i = 0; i < len2; i++, iter++) {
             s_buf[iter] = str2[i];
         }
     }
 
-    String String::Substr(int in1, int in2) {
+    String String::Substr(const size_t in1, const size_t in2) {
         if (in1 >= 0 && in2 < s_sLen && in1 <= in2) {
             char* buff = new char[((in2 - in1)+1) + 1]();
-            for (int i = 0, iter = in1; iter <= in2; iter++, i++) {
+            for (size_t i = 0, iter = in1; iter <= in2; iter++, i++) {
                 buff[i] = s_buf[iter];
             }
             String string(buff);
@@ -222,8 +219,8 @@ namespace Comet {
         FillFrom(str, 0, len(str));
     }
 
-    void String::FillFrom(const char* str, int start, int length) {
-        int i;
+    void String::FillFrom(const char* str, const size_t start, const size_t length) {
+        size_t i;
         for (i = 0, iter = start; iter < this->s_sLen && i < length; iter++, i++) {
             this->s_buf[iter] = str[i];
         }
@@ -237,7 +234,7 @@ namespace Comet {
 
     // TODO: HANDLE OUT OF RANGE
     // subscript operator
-    char& String::operator[](const int index) const {
+    char& String::operator[](const size_t index) const {
         // if desired index isn't out of range
         // return reference to value
         if (index >= 0 && index < s_sLen) {
@@ -248,7 +245,7 @@ namespace Comet {
     }
 
     // allocate space for string
-    void String::Alloc(int len) {
+    void String::Alloc(const size_t len) {
         // check if new length is positive
         if (len >= 0) {
             // deallocate if string is full already
@@ -275,7 +272,7 @@ namespace Comet {
         }
     }
 
-    void String::Term(int spnt) {
+    void String::Term(const size_t spnt) {
         for (iter = spnt; iter <= s_bLen; iter++) {
             s_buf[iter] = '\0';
         }
@@ -286,7 +283,7 @@ namespace Comet {
     void String::Reverse() {
         // used for temp storage of character
         char temp;
-        for (int i = 0, j = s_sLen - 1; i <= j; i++, j--) {
+        for (size_t i = 0, j = s_sLen - 1; i <= j; i++, j--) {
             temp = s_buf[i];
             s_buf[i] = s_buf[j];
             s_buf[j] = temp;
@@ -294,7 +291,7 @@ namespace Comet {
     }
 
     // replace char at index with new char
-    void String::Replace(int in, char ch) {
+    void String::Replace(const size_t in, char ch) {
         if (in >= 0 && in < s_sLen) {
             this->s_buf[in] = ch;
         }
@@ -304,35 +301,35 @@ namespace Comet {
     }
 
     // replace specified range with a new string
-    void String::Replace(int b_In, int e_In, const char* str) {
+    void String::Replace(const size_t b_In, const size_t e_In, const char* str) {
         // first get length of cstring
-        int slen = len(str);
+        size_t slen = len(str);
         // if indices are within bounds and in order
         if (b_In >= 0 && e_In < s_sLen && b_In <= e_In) {
             // iterate starting at b_in and beginning of cstring
-            for (int i = 0, iter = b_In; iter <= e_In && i < slen; ++iter, ++i) {
+            for (size_t i = 0, iter = b_In; iter <= e_In && i < slen; ++iter, ++i) {
                 this->s_buf[iter] = str[i];
             }
         }
-    } // Replace (int, int, const char*)
+    } // Replace (size_t, size_t, const char*)
 
     // Delete a single char *calls overloaded delete for deleting range
-    void String::Delete(int in) {
+    void String::Delete(const size_t in) {
         // single character so range is in to in
         Delete(in, in);
     }
 
     // Delete a range of characters from in1 to in2 inclusive!
-    void String::Delete(int in1, int in2) {
+    void String::Delete(const size_t in1, const size_t in2) {
         // boundary checking
         if (in1 >= 0 && in1 <= in2 && in2 < s_sLen) {
-            int range = ((in2 - in1) + 1);
+            size_t range = ((in2 - in1) + 1);
             // first assign as much to range from left over after range as possible
-            for (int i = in1, j = (in2 + 1); i <= in2, j < s_sLen; i++, j++) {
+            for (size_t i = in1, j = (in2 + 1); i <= in2, j < s_sLen; i++, j++) {
                 s_buf[i] = s_buf[j];
             }
             // now null terminate leftover for cases where range and leftover are not equal
-            for (int i = (s_sLen - range); i < s_sLen; i++) {
+            for (size_t i = (s_sLen - range); i < s_sLen; i++) {
                 s_buf[i] = '\0';
             }
             // now update string length
@@ -346,10 +343,10 @@ namespace Comet {
      *      Prgrmr ay NOT call this method, for their own protection, other appends calculate
      *      length of string for them. This is necessary to user char with Append!
      **************************************************************************************/
-    void String::Append(const char* str, int leng) {
-        Insert(this->End() + 1, str, leng);
+    void String::Append(const char* str, const size_t leng) {
+        Insert(this->End() + 1, leng, str);
         /*// if string length doesn't already equal buffer length
-        int cLen = leng;
+        size_t cLen = leng;
         //std::cout << cLen << std::endl;
         if ((s_sLen + cLen) < s_bLen) {
             s_sLen += cLen;                                                       // increase string length
@@ -357,8 +354,8 @@ namespace Comet {
         }
         // increasing string length will result in out of bounds so realloc
         else {
-            int sLength = s_sLen;                                             // store original string length
-            int bLength = s_bLen + REALLOC_BY + cLen;                          // new buffer length will be buffer length
+            size_t sLength = s_sLen;                                             // store original string length
+            size_t bLength = s_bLen + REALLOC_BY + cLen;                          // new buffer length will be buffer length
             char* t_buf = new char[s_sLen + 1];                               // alloc temp char buffer with new length
             t_buf[s_bLen] = '\0';                                             // null terminate end
             FillTo(t_buf);                                                     // fill temp buffer with contents of string
@@ -380,8 +377,8 @@ namespace Comet {
         Append(str.s_buf, str.Length());
     }
 
-    //?? WORK IN PROGRESS, MAY NEED TO USE A VEC FOR INTTOCHAR
-    // FOR MULTI-DIGIT INTEGERS
+    //?? WORK IN PROGRESS, MAY NEED TO USE A VEC FOR size_tTOCHAR
+    // FOR MULTI-DIGIT size_tEGERS
     void String::Append(int x) {
         String num;
         char y;
@@ -408,15 +405,15 @@ namespace Comet {
 
     // simply inserts a char at the beginning. Unecessary, just for user-friendliness
     void String::Prepend(char ch) {
-        Insert(0, &ch, 1);
+        Insert(0, 1, &ch);
     }
 
-    bool String::Insert(int in, const char* str) {
-        Insert(in, str, len(str));
+    bool String::Insert(const size_t in, const char* str) {
+        Insert(in, len(str), str);
     }
 
     // insert a char at a specified index
-    bool String::Insert(int in, const char* str, int strLen) {
+    bool String::Insert(const size_t in, const size_t strLen, const char* str) {
         if (s_sLen == 0 && in == 0) {
             Alloc(strLen + REALLOC_BY);
             s_sLen += strLen;
@@ -424,11 +421,11 @@ namespace Comet {
         }
         // make sure index is within bounds
         else if (in >= 0 && in <= s_sLen) {
-            int length = s_sLen;
-            int sLength = s_sLen + strLen;                                           // maintain string length
+            size_t length = s_sLen;
+            size_t sLength = s_sLen + strLen;                                           // masize_tain string length
             // must reallocate if inserting a char will cause overflow
             if ((s_sLen + strLen) > s_bLen) {
-                int bLength = sLength + REALLOC_BY;                              // buffer length is orig buff plus modifier
+                size_t bLength = sLength + REALLOC_BY;                              // buffer length is orig buff plus modifier
                 char* t_buf = new char[length + 1];                            // allocate a tempory buffer to store string contents
                 t_buf[length] = '\0';                                          // null terminate temp buff
                 FillTo(t_buf);                                                  // fill temporary buffer with string contents
@@ -450,7 +447,7 @@ namespace Comet {
             return 0;
         }
         return 1;
-    } // INSERT(INT, CHAR)
+    } // INSERT(size_t, CHAR)
 
     // Capitalize every letter in the string
     bool String::Upper() {
@@ -459,14 +456,14 @@ namespace Comet {
     } // UPPER
 
     // capitalize specific character
-    bool String::Upper(int in) {
+    bool String::Upper(const size_t in) {
         // call overloaded Upper() with range of in to in (one char)
         return this->Upper(in, in);
     }
 
     // capitalize all letters
     // used for overloaded methods
-    bool String::Upper(int in1, int in2) {
+    bool String::Upper(const size_t in1, const size_t in2) {
         if (in1 <= in2 && in2 < s_sLen) {
             for (iter = in1; iter <= in2; iter++) {
                 if (isAlpha(s_buf[iter]) && isLower(s_buf[iter])) {
@@ -485,13 +482,13 @@ namespace Comet {
     }
 
     // set specific character to lowercase
-    bool String::Lower(int in) {
+    bool String::Lower(const size_t in) {
         return this->Lower(in, in);
     }
 
     // set range of characters to lowercase
     // used for other methods
-    bool String::Lower(int in1, int in2) {
+    bool String::Lower(const size_t in1, const size_t in2) {
         if (in1 <= in2 && in2 < s_sLen) {
             for (iter = in1; iter <= in2; iter++) {
                 if (isAlpha(s_buf[iter]) && isUpper(s_buf[iter])) {
@@ -505,15 +502,15 @@ namespace Comet {
     }
 
     // Public accessors
-    int String::Length() const {
+    size_t String::Length() const {
         return s_sLen;
     }
 
-    int String::End() const {
+    size_t String::End() const {
         return (s_sLen - 1);
     }
 
-    char String::CharAt(int in) const {
+    char String::CharAt(const size_t in) const {
         if (in >=0 && in < s_sLen) return s_buf[in];
     }
 
@@ -521,22 +518,22 @@ namespace Comet {
         return s_buf;
     }
 
-    // Print with help from a friend
+    // Prsize_t with help from a friend
     std::ostream& operator<<(std::ostream& ost, const String& str) {
         return ost << str.s_buf;
     }
 
     // helper methods
-    int String::len(const char* str) const {
-        int i;
+    size_t String::len(const char* str) const {
+        size_t i;
         for (i = 0; str[i] != '\0'; i++) {}
         return i;
     }
 
     // check if character is alphabetical
     bool String::isAlpha(const char ch) const {
-        return ((int(ch) >= CAP_BEG && int(ch) <= CAP_END
-                 || int(ch) >= LOW_BEG && int(ch) <= LOW_END)) ? true : false;
+        return ((size_t(ch) >= CAP_BEG && size_t(ch) <= CAP_END
+                 || size_t(ch) >= LOW_BEG && size_t(ch) <= LOW_END)) ? true : false;
     }
 
     // check if character is uppercase
