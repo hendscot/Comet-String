@@ -6,10 +6,11 @@
 /*=================TO DO ==================
  * 1. handle s_sLen assign in Alloc
  * 2. add way to insert append numbers
+ * 4. need error handling, excpetions...
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     "0.1.9"
+#define COMET_STRING_VERSION     "0.2.1"
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -37,8 +38,8 @@ namespace Comet {
             String& operator  =   (const char*);
             /*************** TODO ! ***********/
             
-            void  operator  +=  (const String&);
-            void  operator  +=  (const char*);
+            void    operator  +=  (const String&);
+            void    operator  +=  (const char*);
             /**********************************/            
             bool    operator  ==  (const String&)     const;
             bool    operator  ==  (const char*)       const;
@@ -57,8 +58,12 @@ namespace Comet {
             // Public Accessors
             size_t  End           ()                  const;
             size_t  Length        ()                  const;
+            size_t  Search        (const char *)      const;
+            size_t  Search        (const String&)     const;
+            size_t  Search        (char)              const;
             char*   GetBuff       ()                  const;
             char    CharAt        (const size_t)      const;
+            String  Substr        (const size_t, const size_t) const;
 
             // Public Mutators
             void    Replace       (const size_t, char);
@@ -80,8 +85,12 @@ namespace Comet {
             bool    Lower         (const size_t);
             bool    Lower         (const size_t, const size_t);
             void    Concat        (const String&);
-            String  Substr        (const size_t, const size_t);
 
+            const
+            size_t  strnf          = -1;
+
+
+            bool   cmp              (const char*, const char*) const;
         private:
             // Private Data Members
             char*      s_buf;
@@ -103,6 +112,7 @@ namespace Comet {
 
             // Private helper functions
             size_t len              (const char*)    const;
+            
             bool   isAlpha          (const char)     const;
             bool   isUpper          (const char)     const;
             bool   isLower          (const char)     const;

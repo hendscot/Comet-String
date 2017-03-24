@@ -201,10 +201,11 @@ namespace Comet {
         }
     }
 
-    String String::Substr(const size_t in1, const size_t in2) {
-        if (in1 >= 0 && in2 < s_sLen && in1 <= in2) {
-            char* buff = new char[((in2 - in1)+1) + 1]();
-            for (size_t i = 0, iter = in1; iter <= in2; iter++, i++) {
+    String String::Substr(const size_t in1, const size_t sz) const {
+        size_t in2 = ((in1 + sz) - 1);
+        if (in1 >= 0 && in2 < s_sLen) {
+            char* buff = new char[sz + 1]();
+            for (int i = 0, iter = in1; iter <= in2; iter++, i++) {
                 buff[i] = s_buf[iter];
             }
             String string(buff);
@@ -509,6 +510,30 @@ namespace Comet {
         return (s_sLen - 1);
     }
 
+    size_t String::Search (const char* str) const {
+        int leng = len(str);
+        for (iter = 0; iter < s_sLen; iter++) {
+            if (s_buf[iter] == str[0]) {
+                if (iter + (leng - 1) < s_sLen) {
+                    if (cmp (Substr (iter, leng).GetBuff(), str))
+                        return iter;
+                }
+            }
+        }
+        return strnf;
+    }
+
+    size_t String::Search (const String& str) const {
+        return (this->Search (str.GetBuff ()));
+    }
+
+    size_t String::Search (char ch) const {
+        for (iter = 0; iter < s_sLen; iter++) {
+            if (s_buf[iter] == ch) return iter;
+        }
+        return strnf;
+    }
+
     char String::CharAt(const size_t in) const {
         if (in >=0 && in < s_sLen) return s_buf[in];
     }
@@ -517,7 +542,7 @@ namespace Comet {
         return s_buf;
     }
 
-    // Prsize_t with help from a friend
+    // Print with help from a friend
     std::ostream& operator<<(std::ostream& ost, const String& str) {
         return ost << str.s_buf;
     }
@@ -527,6 +552,15 @@ namespace Comet {
         size_t i;
         for (i = 0; str[i] != '\0'; i++) {}
         return i;
+    }
+
+    bool String::cmp (const char* str1, const char* str2) const {
+        int leng = len (str1);
+        if (leng != len (str2)) return false;
+        for (int i = 0; i < leng; ++i) {
+            if (str1[i] != str2[i]) return false;
+        }
+        return true;
     }
 
     // check if character is alphabetical
