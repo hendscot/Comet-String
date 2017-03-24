@@ -6,12 +6,10 @@
 /*=================TO DO ==================
  * 1. handle s_sLen assign in Alloc
  * 2. add way to insert append numbers
- * 3. insert to 0/Prepend throws segfault
- * 4. add support for inserting char
  *=======================================*/
 
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     "0.1.7"
+#define COMET_STRING_VERSION     "0.1.9"
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
@@ -70,8 +68,8 @@ namespace Comet {
             void    Append        (const String&);
             void    Append        (int);
             void    Prepend       (char);
-            bool    Insert        (const size_t, const char*);
-            bool    Insert        (const size_t, const size_t, const char*);
+            bool    Insert        (const int, const char*);
+            bool    Insert        (const int, const size_t, const char*);
             void    Delete        (const size_t);
             void    Delete        (const size_t, const size_t);
             void    Reverse       ();
@@ -88,7 +86,7 @@ namespace Comet {
             // Private Data Members
             char*      s_buf;
             mutable 
-            size_t     iter;
+            int        iter;
             size_t     s_bLen;
             size_t     s_sLen;
 

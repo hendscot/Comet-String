@@ -1,4 +1,3 @@
-#include <cassert>
 #include "String.h"
 namespace Comet {
     // Default Constructor
@@ -408,12 +407,12 @@ namespace Comet {
         Insert(0, 1, &ch);
     }
 
-    bool String::Insert(const size_t in, const char* str) {
+    bool String::Insert(const int in, const char* str) {
         Insert(in, len(str), str);
     }
 
     // insert a char at a specified index
-    bool String::Insert(const size_t in, const size_t strLen, const char* str) {
+    bool String::Insert(const int in, const size_t strLen, const char* str) {
         if (s_sLen == 0 && in == 0) {
             Alloc(strLen + REALLOC_BY);
             s_sLen += strLen;
@@ -422,7 +421,7 @@ namespace Comet {
         // make sure index is within bounds
         else if (in >= 0 && in <= s_sLen) {
             size_t length = s_sLen;
-            size_t sLength = s_sLen + strLen;                                           // masize_tain string length
+            size_t sLength = s_sLen + strLen;                                           // maintain string length
             // must reallocate if inserting a char will cause overflow
             if ((s_sLen + strLen) > s_bLen) {
                 size_t bLength = sLength + REALLOC_BY;                              // buffer length is orig buff plus modifier
