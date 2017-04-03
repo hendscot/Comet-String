@@ -6,38 +6,32 @@
 /*=================TO DO ==================
  * 1. handle s_sLen assign in Alloc
  * 2. add way to insert append numbers
- * 4. need error handling, excpetions...
+ * 4. need error handling, exceptions...
  *=======================================*/
-
+namespace Comet {
 //#define NULL ( (void *) 0)
-#define COMET_STRING_VERSION     "0.2.1"
+#define COMET_STRING_VERSION     "0.2.3"
 #define CASEDIFF                 0x0020
 #define CAP_BEG                  0x0041
 #define CAP_END                  0x005A
 #define LOW_BEG                  0x0061
 #define LOW_END                  0x007A
 #define REALLOC_BY               0x000A
-
-namespace Comet {
     class String {
         public:
             // constructors
             explicit
             String                (size_t size = 0);
             explicit
-            String                (const char*);
-            
+            String                (const char*);         
             // copy constructor
-            String                (const String&);
-            
+            String                (const String&);           
             // destructor
-            ~String               ();
-            
+            ~String               (); 
             // operator overloads
             String& operator  =   (const String&);
             String& operator  =   (const char*);
             /*************** TODO ! ***********/
-            
             void    operator  +=  (const String&);
             void    operator  +=  (const char*);
             /**********************************/            
@@ -54,7 +48,6 @@ namespace Comet {
             bool    operator  <=  (const char*)       const;
             bool    operator  <=  (const String&)     const;
             char&   operator  []  (const size_t)      const;
-
             // Public Accessors
             size_t  End           ()                  const;
             size_t  Length        ()                  const;
@@ -64,7 +57,6 @@ namespace Comet {
             char*   GetBuff       ()                  const;
             char    CharAt        (const size_t)      const;
             String  Substr        (const size_t, const size_t) const;
-
             // Public Mutators
             void    Replace       (const size_t, char);
             void    Replace       (const size_t, const size_t, const char*);
@@ -84,13 +76,8 @@ namespace Comet {
             bool    Lower         ();
             bool    Lower         (const size_t);
             bool    Lower         (const size_t, const size_t);
-            void    Concat        (const String&);
-
-            const
+            static const
             size_t  strnf          = -1;
-
-
-            bool   cmp              (const char*, const char*) const;
         private:
             // Private Data Members
             char*      s_buf;
@@ -98,7 +85,6 @@ namespace Comet {
             int        iter;
             size_t     s_bLen;
             size_t     s_sLen;
-
             // Private Mutators
             void    Alloc         (const size_t);
             void    Dealloc       ();
@@ -108,20 +94,17 @@ namespace Comet {
             void    FillTo        (char*) const;
             void    Concat        (const char*, const char*);
             void    Append        (const char*, const size_t);
-
-
             // Private helper functions
-            size_t len              (const char*)    const;
-            
-            bool   isAlpha          (const char)     const;
-            bool   isUpper          (const char)     const;
-            bool   isLower          (const char)     const;
-            char   IntToChar        (int);
-
+            static size_t len              (const char*);
+            static bool   isAlpha          (const char);
+            static bool   isUpper          (const char);
+            static bool   isLower          (const char);
+            static char   IntToChar        (int);
+            static bool   cmp              (const char*, const char*);
             // friends
             friend std::ostream& operator<<(std::ostream&, const String&);
             friend String  operator  +   (const String&, const String&);
+            friend String  operator  +   (const String&, const char*);
     };
 }
-
 #endif // STRING_H

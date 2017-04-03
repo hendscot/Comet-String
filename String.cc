@@ -36,21 +36,9 @@ namespace Comet {
         // Check that we're not assigning same objs
         if (this != &str) {
             // Only resize if new length is >= to buffer length
-            if (str.s_sLen > s_bLen) {
-                // allocate with new string size
-                Alloc (str.s_sLen);
-                s_sLen = str.s_sLen;
-            }
-            else {
-                // else just terminate end
-                s_sLen = str.s_sLen;
-                Term(s_sLen);
-            }
-            // assign buffer to assignee buffer
-            FillFrom(str.s_buf);
+            return (*this = str.GetBuff());
         }
-        return *this;
-    } // operator+(const String&)
+    } // operator=(const String&)
 
     // Assignment overload (String and C-String)
     String& String::operator=(const char* str) {
@@ -157,6 +145,12 @@ namespace Comet {
         return string;
     }
 
+    String operator+(const String& lhs, const char* rhs) {
+        String string;
+        string.Alloc(string.s_sLen = lhs.Length() + Comet::String::len(rhs));
+        string.Concat(lhs.GetBuff(), rhs);
+        return string;
+    }
 
     void String::operator+=(const char* str) {
         this->Append(str);
@@ -164,27 +158,6 @@ namespace Comet {
 
     void String::operator+=(const String& str) {
         return (*this += str.s_buf);
-    }
-
-    // TODO : ERROR HANDLING
-    void String::Concat(const String& str) {
-        if (str.s_sLen > (this->s_bLen - this->s_sLen)) {
-            /*size_t sLength = (s_sLen + str.s_s_len);
-            size_t bLength = (s_bLen + str.s_bLen);
-            char* t_buf = new char[bLength + 1];
-            t_buf[bLength] = '\0';
-            FillTo(t_buf, 0, this->s_sLen);
-            str.FillTo(t_buf, this->s_sLen, str.s_sLen);
-            Alloc(bLength);
-            s_sLen = sLength;
-            FillFrom(t_buf, 0, ??);*/
-        }
-        else {
-            for (size_t i = 0, iter = s_sLen; i < str.s_sLen; iter++, i++) {
-                this->s_buf[iter] = str.s_buf[i];
-                ++s_sLen;
-            }
-        }
     }
 
     // concatenate two c-strings
@@ -345,26 +318,6 @@ namespace Comet {
      **************************************************************************************/
     void String::Append(const char* str, const size_t leng) {
         Insert(this->End() + 1, leng, str);
-        /*// if string length doesn't already equal buffer length
-        size_t cLen = leng;
-        //std::cout << cLen << std::endl;
-        if ((s_sLen + cLen) < s_bLen) {
-            s_sLen += cLen;                                                       // increase string length
-            this->FillFrom(str, s_sLen - cLen);
-        }
-        // increasing string length will result in out of bounds so realloc
-        else {
-            size_t sLength = s_sLen;                                             // store original string length
-            size_t bLength = s_bLen + REALLOC_BY + cLen;                          // new buffer length will be buffer length
-            char* t_buf = new char[s_sLen + 1];                               // alloc temp char buffer with new length
-            t_buf[s_bLen] = '\0';                                             // null terminate end
-            FillTo(t_buf);                                                     // fill temp buffer with contents of string
-            Alloc(bLength);                                                    // realloc string
-            s_sLen = sLength + cLen;                                           // update string length
-            FillFrom(t_buf);                                                   // now refill string with appended contents
-            FillFrom(str, s_sLen - cLen);
-            delete t_buf;                                                      // cleanup temporary buffer
-        }*/
     }
     /****One of the two public append methods. Calculates length of string and calls overloaded
      *   append method
@@ -422,17 +375,17 @@ namespace Comet {
         // make sure index is within bounds
         else if (in >= 0 && in <= s_sLen) {
             size_t length = s_sLen;
-            size_t sLength = s_sLen + strLen;                                           // maintain string length
+            size_t sLength = s_sLen + strLen;
             // must reallocate if inserting a char will cause overflow
             if ((s_sLen + strLen) > s_bLen) {
-                size_t bLength = sLength + REALLOC_BY;                              // buffer length is orig buff plus modifier
-                char* t_buf = new char[length + 1];                            // allocate a tempory buffer to store string contents
-                t_buf[length] = '\0';                                          // null terminate temp buff
-                FillTo(t_buf);                                                  // fill temporary buffer with string contents
-                Alloc(bLength);                                                 // reallocate string
-                s_sLen = sLength;                                               // restore string length after reallocation
-                FillFrom(t_buf);                                                // fill string from buffer
-                delete t_buf;                                                 // cleanup buffer
+                size_t bLength = sLength + REALLOC_BY;
+                char* t_buf = new char[length + 1];
+                t_buf[length] = '\0';
+                FillTo(t_buf);
+                Alloc(bLength);
+                s_sLen = sLength;
+                FillFrom(t_buf);
+                delete t_buf;
             }
             else {
                 s_sLen += strLen;
@@ -535,7 +488,7 @@ namespace Comet {
     }
 
     char String::CharAt(const size_t in) const {
-        if (in >=0 && in < s_sLen) return s_buf[in];
+        if (in < s_sLen) return s_buf[in];
     }
 
     char* String::GetBuff() const {
@@ -547,14 +500,15 @@ namespace Comet {
         return ost << str.s_buf;
     }
 
+    // STATIC
     // helper methods
-    size_t String::len(const char* str) const {
+    size_t String::len(const char* str) {
         size_t i;
         for (i = 0; str[i] != '\0'; i++) {}
         return i;
     }
 
-    bool String::cmp (const char* str1, const char* str2) const {
+    bool String::cmp (const char* str1, const char* str2) {
         int leng = len (str1);
         if (leng != len (str2)) return false;
         for (int i = 0; i < leng; ++i) {
@@ -564,18 +518,18 @@ namespace Comet {
     }
 
     // check if character is alphabetical
-    bool String::isAlpha(const char ch) const {
-        return ((size_t(ch) >= CAP_BEG && size_t(ch) <= CAP_END
-                 || size_t(ch) >= LOW_BEG && size_t(ch) <= LOW_END)) ? true : false;
+    bool String::isAlpha(const char ch) {
+        return ((int(ch) >= CAP_BEG && int(ch) <= CAP_END
+                 || int(ch) >= LOW_BEG && int(ch) <= LOW_END)) ? true : false;
     }
 
     // check if character is uppercase
-    bool String::isUpper(const char ch) const {
+    bool String::isUpper(const char ch) {
         return ((isAlpha(ch) && ch <= CAP_END)) ? true : false;
     }
 
     // check if character is lowercase
-    bool String::isLower(const char ch) const {
+    bool String::isLower(const char ch) {
         return ((isAlpha(ch) && ch >= LOW_BEG)) ? true : false;
     }
 }
