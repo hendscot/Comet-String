@@ -365,6 +365,10 @@ namespace Comet {
         Insert(in, len(str), str);
     }
 
+    bool String::Insert(const int in, char ch) {
+        Insert (in, 1, &ch);
+    }
+
     // insert a char at a specified index
     bool String::Insert(const int in, const size_t strLen, const char* str) {
         if (s_sLen == 0 && in == 0) {

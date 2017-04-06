@@ -66,6 +66,7 @@ namespace Comet {
             void    Append        (int);
             void    Prepend       (char);
             bool    Insert        (const int, const char*);
+            bool    Insert        (const int, char);
             bool    Insert        (const int, const size_t, const char*);
             void    Delete        (const size_t);
             void    Delete        (const size_t, const size_t);
